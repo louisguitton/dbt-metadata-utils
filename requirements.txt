@@ -1,0 +1,6 @@
+algoliasearch>=2.0,<3.0
+jupyterlab
+pydantic[dotenv]
+networkx
+pyvis
+matplotlib

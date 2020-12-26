@@ -1,0 +1,175 @@
+body,
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0.5rem 1rem;
+  background-image: linear-gradient(284deg, #fedd4e, #fcb43a);
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
+.header-title::after {
+  content: ' ▸ ';
+  padding: 0 0.5rem;
+}
+
+.header-subtitle {
+  font-size: 1.2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.search-panel {
+  display: block;
+}
+
+.search-panel__filters {
+  display: block;
+  float: left;
+  width: 20%;
+  padding: 0 15px;
+}
+
+.ais-RefinementList-list {
+  margin-left: 5px;
+}
+
+.ais-RefinementList-item {
+  display: list-item;
+}
+
+.ais-RefinementList-labelText {
+  display: inline-block;
+  width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ais-RefinementList-count {
+  float: right;
+}
+
+.ais-ClearRefinements {
+  margin: 1em 0;
+}
+
+.search-panel__results {
+  display: block;
+  float: right;
+  width: 75%;
+}
+
+.ais-Highlight-highlighted {
+  color: inherit;
+  font-size: inherit;
+}
+
+#searchbox {
+  padding: 20px 100px 20px;
+  font-size: 1em;
+  background-image: linear-gradient(284deg, #fedd4e, #fcb43a);
+  max-width: 100%;
+  margin: 0px auto 0px auto;
+}
+
+.ais-SearchBox {
+  margin: 0px 0 0 0;
+  padding: 0 0 0 50px;
+  position: relative;
+}
+
+.ais-SearchBox-input {
+  margin-right: 56px;
+}
+
+.ais-Stats {
+  text-align: right;
+  display: block;
+  padding: 1rem;
+}
+
+#pagination {
+  display: block;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.ais-InstantSearch {
+  max-width: 960px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+#hits {
+  min-height: 800px;
+}
+
+.ais-Hits-item {
+  width: 100%;
+}
+
+.hit-name {
+  margin-bottom: 0.5em;
+}
+
+.hit-description {
+  font-size: 1em;
+  color: #666;
+  background-color: #eee;
+  display: block;
+  font-style: italic;
+  padding: .05em .2em;
+  margin: .2em 0 0;
+  border-radius: 4px;
+}
+
+.hit-metadata {
+  border-top: dotted 1px #eee;
+  padding: 20px 0;
+  margin: 0;
+  clear: both;
+  font-size: 0.9em;
+  color: #bbb;
+  overflow:auto;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content auto;
+}
+
+dt {
+  grid-column-start: 1;
+  font-weight: bold;
+
+}
+
+dd {
+  grid-column-start: 2;
+}
