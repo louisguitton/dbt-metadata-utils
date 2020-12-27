@@ -28,12 +28,18 @@ class NodeSearch(BaseModel):
     folder: str
     # attributes for ranking
     degree_centrality: float
+    is_in_mart: bool
+    has_description: bool
+    # TODO: add other score as customRank
+    # score could be based on lastmod, number of users/views
 
     @root_validator(pre=True)
     def parse(cls, values):
         values["objectID"] = values.get("unique_id")
         values["materialized"] = values.get("config").get("materialized")
         values["folder"] = "/".join(values.get("fqn")[1:3])
+        values["is_in_mart"] = values.get("fqn")[1] == "marts"
+        values["has_description"] = len(values.get("description")) > 20
         return values
 
     @validator("degree_centrality")
@@ -92,17 +98,30 @@ if __name__ == "__main__":
     index.save_objects(es_records)
 
     index.set_settings(
+        # https://www.algolia.com/doc/api-reference/settings-api-parameters/
         {
             "searchableAttributes": [
-                "name",
-                "description",
+                # Here we want name and description to have the same importance
+                # so we group them with a comma-separated list.
+                "name,description",
             ],
-            "customRanking": ["desc(degree_centrality)"],
             "attributesForFaceting": [
                 "resource_type",
                 "materialized",
                 "folder",
                 "sources",
             ],
+            "ranking": [
+                # we use centrality as a sorting attribute instead of a custom rank
+                "desc(degree_centrality)",
+                "typo",
+                "words",
+                "filters",
+                "proximity",
+                "attribute",
+                "exact",
+                "custom",
+            ],
+            "customRanking": ["desc(is_in_mart)", "desc(has_description)"],
         }
     )
