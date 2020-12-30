@@ -4,3 +4,5 @@ pydantic[dotenv]
 networkx
 pyvis
 matplotlib
+gitpython
+pandas

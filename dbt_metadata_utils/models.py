@@ -41,6 +41,7 @@ class Column(BaseModel):
 class Node(BaseModel):
     unique_id: str
     path: Path
+    original_file_path: Path
     resource_type: DbtResourceType
     description: str
     depends_on: Optional[NodeDeps]
@@ -57,8 +58,9 @@ class Node(BaseModel):
 class Manifest(BaseModel):
     nodes: Dict[str, Node]
     sources: Dict[str, Node]
+    # TODO: add exposures when needed
 
-    @validator("nodes", "sources")
+    @validator("*")
     def filter(cls, val):
         return {
             k: v
