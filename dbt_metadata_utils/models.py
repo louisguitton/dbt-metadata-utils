@@ -38,26 +38,49 @@ class Column(BaseModel):
     description: str
 
 
-class Node(BaseModel):
-    unique_id: str
-    path: Path
-    original_file_path: Path
-    resource_type: DbtResourceType
-    description: str
-    depends_on: Optional[NodeDeps]
-    config: NodeConfig
-    name: str
-    tags: List[str]
-    sources: Optional[List[List[str]]]
+class BaseNode(BaseModel):
     columns: Dict[str, Column]
+    config: NodeConfig
+    # database
+    description: str
     fqn: List[str]
-    # raw_sql
-    # refs
+    # meta
+    name: str
+    original_file_path: Path
+    # package_name
+    # patch_path
+    path: Path
+    resource_type: DbtResourceType
+    # root_path
+    # schema
+    tags: List[str]
+    unique_id: str
 
+class Node(BaseNode):
+    # alias
+    # buid_path
+    # checksum
+    # deferred
+    depends_on: NodeDeps
+    # docs
+    # raw_sql: str  # with jinja
+    # refs
+    sources: List[List[str]]
+
+class Source(BaseNode):
+    # external
+    # freshness
+    # identifier
+    # loaded_at_field
+    loader: str
+    # quoting
+    # source_description
+    # source_meta
+    # source_name
 
 class Manifest(BaseModel):
     nodes: Dict[str, Node]
-    sources: Dict[str, Node]
+    sources: Dict[str, Source]
     # TODO: add exposures when needed
 
     @validator("*")
