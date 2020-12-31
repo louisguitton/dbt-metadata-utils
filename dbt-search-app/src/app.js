@@ -51,6 +51,10 @@ search.addWidgets([
         container: '#resource_type-list',
         attribute: 'resource_type',
     }),
+    instantsearch.widgets.refinementList({
+        container: '#loader-list',
+        attribute: 'loader',
+    }),
     instantsearch.widgets.configure({
         hitsPerPage: 10,
     })

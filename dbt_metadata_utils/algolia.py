@@ -36,6 +36,7 @@ class NodeSearch(BaseModel):
     materialized: Optional[DbtMaterializationType]
     sources: Optional[List[str]]
     folder: str
+    loader: Optional[str]
     # attributes for ranking
     degree_centrality: float
     is_in_mart: bool
@@ -139,6 +140,7 @@ if __name__ == "__main__":
                 "materialized",
                 "folder",
                 "sources",
+                "loader"
             ],
             "ranking": [
                 # we use centrality as a sorting attribute instead of a custom rank
