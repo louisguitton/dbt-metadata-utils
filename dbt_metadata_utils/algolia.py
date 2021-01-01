@@ -156,3 +156,24 @@ if __name__ == "__main__":
             "customRanking": ["desc(is_in_mart)", "desc(has_description)"],
         }
     )
+
+    # Dynamic Filtering
+    # = Removing filter values from the query string and using them directly as filters
+    index.save_rules([{
+        # https://www.algolia.com/doc/api-reference/api-methods/save-rule/#method-param-rule
+        "objectID": "loader-facets",
+        "description": "Dynamic filtering on loaders",
+        "conditions": [{
+            "anchoring": "contains",
+            "pattern": "{facet:loader}",
+            "alternatives": True
+        }],
+        "consequence": {
+            "params": {
+                "query": {
+                    "remove": ["{facet:loader}"],
+                },
+                "automaticFacetFilters": ["loader"],
+            }
+        }
+    }])
