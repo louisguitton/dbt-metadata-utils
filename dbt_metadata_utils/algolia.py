@@ -134,6 +134,7 @@ if __name__ == "__main__":
                 # Here we want name and description to have the same importance
                 # so we group them with a comma-separated list.
                 "name,description",
+                "folder,sources"
             ],
             "attributesForFaceting": [
                 "resource_type",
