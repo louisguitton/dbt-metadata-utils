@@ -53,35 +53,6 @@
     </div>
   </div>
 
-  <script type="text/html" id="hit-template">
-    <article>
-      <h1 class="hit-name">{{#helpers.highlight}}{ "attribute": "name" }{{/helpers.highlight}}</h1>
-      <p class="hit-description">{{#helpers.highlight}}{ "attribute": "description" }{{/helpers.highlight}}</p>
-      <dl class="hit-metadata">
-        <dt>folder:</dt>
-        <dd>{{#helpers.highlight}}{ "attribute": "folder" }{{/helpers.highlight}}</dd>
-        <dt>sources:</dt>
-        <dd>{{#helpers.highlight}}{ "attribute": "sources" }{{/helpers.highlight}}</dd>
-        <dt>type:</dt>
-        <dd>{{ resource_type }}</dd>
-        <dt>materialization:</dt>
-        <dd>{{ materialized }}</dd>
-        <dt>loader:</dt>
-        <dd>{{ loader }}</dd>
-        <dt>centrality:</dt>
-        <dd>{{ degree_centrality }}</dd>
-        <dt>owner:</dt>
-        <dd>{{ owner }}</dd>
-        <dt>created_at:</dt>
-        <!--TODO: new Date(created_at * 1000).toDateString()-->
-        <dd>{{ created_at }}</dd>
-        <dt>last_modified_at:</dt>
-        <!--TODO: new Date(last_modified_at * 1000).toDateString()-->
-        <dd>{{ last_modified_at }}</dd>
-      </dl>
-    </article>
-  </script>
-
   <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.5.1/dist/algoliasearch-lite.umd.js"
     integrity="sha256-EXPXz4W6pQgfYY3yTpnDa3OH8/EPn16ciVsPQ/ypsjk=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.8.3/dist/instantsearch.production.min.js"

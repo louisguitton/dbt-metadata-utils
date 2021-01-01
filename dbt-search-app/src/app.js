@@ -22,8 +22,37 @@ search.addWidgets([
     instantsearch.widgets.hits({
         container: '#hits',
         templates: {
-            item: document.getElementById('hit-template').innerHTML,
-            empty: `We didn't find any results for the search <em>"{{query}}"</em>`,
+            // https://www.algolia.com/doc/api-reference/widgets/hits/js/#widget-param-item
+            // https://www.algolia.com/doc/guides/building-search-ui/widgets/customize-an-existing-widget/js/#example-using-a-function
+            // https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/highlighting-snippeting/js/#response-information
+            item(hit) {
+                return `<article>
+                <h2 class="hit-name">${hit._highlightResult.name.value}</h2>
+                <p class="hit-description">${hit._highlightResult.description.value}</p>
+                <dl class="hit-metadata">
+                    <dt>folder:</dt>
+                    <dd>${hit._highlightResult.folder.value}</dd>
+                    <dt>sources:</dt>
+                    <dd><ul>${hit._highlightResult.sources
+                        .map(({ value }) => `<li>${value}</li>`)
+                        .join('')}</ul></dd>
+                    <dt>type:</dt>
+                    <dd>${hit.resource_type}</dd>
+                    <dt>materialization:</dt>
+                    <dd>${hit.materialized}</dd>
+                    <dt>loaders:</dt>
+                    <dd>${hit.loader || ""}</dd>
+                    <dt>centrality:</dt>
+                    <dd>${hit.degree_centrality}</dd>
+                    <dt>owner:</dt>
+                    <dd>${hit.owner}</dd>
+                    <dt>created_at:</dt>
+                    <dd>${new Date(hit.created_at * 1000).toDateString()}</dd>
+                    <dt>last_modified_at:</dt>
+                    <dd>${new Date(hit.last_modified_at * 1000).toDateString()}</dd>
+                </dl>
+                </article>`;
+            },
         },
     }),
     instantsearch.widgets.pagination({
