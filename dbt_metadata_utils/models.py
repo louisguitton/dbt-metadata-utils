@@ -30,8 +30,9 @@ class NodeDeps(BaseModel):
 
 
 class NodeConfig(BaseModel):
+    enabled: bool
     materialized: Optional[DbtMaterializationType]
-
+    bind: Optional[bool]
 
 class Column(BaseModel):
     name: str
@@ -41,46 +42,48 @@ class Column(BaseModel):
 class BaseNode(BaseModel):
     columns: Dict[str, Column]
     config: NodeConfig
-    # database
+    # database: str
     description: str
     fqn: List[str]
-    # meta
+    # meta: Dict
     name: str
     original_file_path: Path
-    # package_name
-    # patch_path
+    # package_name: str  # might be useful for faceting if you use many submodules
+    # patch_path: Path  # .yml file
     path: Path
     resource_type: DbtResourceType
-    # root_path
-    # schema
+    # root_path: Path
+    # schema: str
     tags: List[str]
     unique_id: str
 
 class Node(BaseNode):
-    # alias
-    # buid_path
-    # checksum
-    # deferred
+    # alias: str  # duplicate from name
+    # checksum.checksum: str  # git commit sha256
+    # deferred: bool
     depends_on: NodeDeps
-    # docs
-    # raw_sql: str  # with jinja
-    # refs
-    sources: List[List[str]]
+    # docs.show: bool
+    # raw_sql: str  # contains jinja
+    # refs: List[List[str]]  # duplicates of subset of depends_on
+    sources: List[List[str]]  # duplicates of subset of depends_on
 
 class Source(BaseNode):
-    # external
-    # freshness
-    # identifier
-    # loaded_at_field
+    # external: Optional[bool]
+    # freshness: Dict
+    # identifier: str
+    # loaded_at_field: str
     loader: str
-    # quoting
-    # source_description
-    # source_meta
-    # source_name
+    # quoting: Dict
+    # source_description: str
+    # source_meta: Dict
+    # source_name: str
 
 class Manifest(BaseModel):
     nodes: Dict[str, Node]
     sources: Dict[str, Source]
+    # macros
+    # docs
+    # exposures
     # TODO: add exposures when needed
 
     @validator("*")
