@@ -141,9 +141,9 @@ if __name__ == "__main__":
             "attributesForFaceting": [
                 "resource_type",
                 "materialized",
-                "folder",
-                "sources",
-                "loader"
+                "searchable(folder)",
+                "searchable(sources)",
+                "loaders"
             ],
             "ranking": [
                 # we use centrality as a sorting attribute instead of a custom rank
@@ -164,19 +164,19 @@ if __name__ == "__main__":
     # = Removing filter values from the query string and using them directly as filters
     index.save_rules([{
         # https://www.algolia.com/doc/api-reference/api-methods/save-rule/#method-param-rule
-        "objectID": "loader-facets",
+        "objectID": "loaders-facets",
         "description": "Dynamic filtering on loaders",
         "conditions": [{
             "anchoring": "contains",
-            "pattern": "{facet:loader}",
+            "pattern": "{facet:loaders}",
             "alternatives": True
         }],
         "consequence": {
             "params": {
                 "query": {
-                    "remove": ["{facet:loader}"],
+                    "remove": ["{facet:loaders}"],
                 },
-                "automaticFacetFilters": ["loader"],
+                "automaticFacetFilters": ["loaders"],
             }
         }
     }])

@@ -83,8 +83,8 @@ search.addWidgets([
         attribute: 'resource_type',
     }),
     instantsearch.widgets.refinementList({
-        container: '#loader-list',
-        attribute: 'loader',
+        container: '#loaders-list',
+        attribute: 'loaders',
     }),
     instantsearch.widgets.configure({
         hitsPerPage: 10,
