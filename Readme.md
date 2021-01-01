@@ -2,7 +2,8 @@
 
 > Parse dbt artifacts, enrich them, and search them with Algolia.
 
-![](dbt-search-app.png)
+![](docs/dbt-search-app.png)
+![](docs/architecture.png)
 
 ## Installation
 

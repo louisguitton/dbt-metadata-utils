@@ -1,5 +1,5 @@
 {
     "restructuredtext.languageServer.disabled": true,
     "python.formatting.provider": "black",
-    "python.pythonPath": "venv/bin/python3.9"
+    "python.pythonPath": "/Users/louis.guitton/workspace/dbt-metadata-utils/venv/bin/python3.9"
 }

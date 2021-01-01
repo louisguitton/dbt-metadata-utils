@@ -6,3 +6,4 @@ pyvis
 matplotlib
 gitpython
 pandas
+diagrams
