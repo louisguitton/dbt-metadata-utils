@@ -41,7 +41,9 @@ search.addWidgets([
                     <dt>materialization:</dt>
                     <dd>${hit.materialized}</dd>
                     <dt>loaders:</dt>
-                    <dd>${hit.loader || ""}</dd>
+                    <dd><ul>${hit.loaders
+                        .map((loader) => `<li>${loader}</li>`)
+                        .join('')}</ul></dd>
                     <dt>centrality:</dt>
                     <dd>${hit.degree_centrality}</dd>
                     <dt>owner:</dt>

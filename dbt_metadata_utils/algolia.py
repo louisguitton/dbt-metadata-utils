@@ -36,7 +36,7 @@ class NodeSearch(BaseModel):
     materialized: Optional[DbtMaterializationType]
     sources: Optional[List[str]]
     folder: str
-    loader: Optional[str]
+    loaders: Optional[List[str]]
     # attributes for ranking
     degree_centrality: float
     is_in_mart: bool
@@ -79,6 +79,7 @@ def get_es_records(
             **node.dict(exclude={"sources"}),
             degree_centrality=centrality.get(node_id, 0.0),
             sources=GraphManifest.get_ancestors_sources(node_id, G),
+            loaders=manifest.get_ancestors_loaders(node_id, G),
             **git_metadata.get(
                 node_id, dict(owner=None, created_at=None, last_modified_at=None)
             ),
@@ -90,6 +91,7 @@ def get_es_records(
             **node.dict(exclude={"sources"}),
             degree_centrality=centrality.get(node_id, 0.0),
             sources=[GraphManifest.get_folder_from_node_id(node_id)],
+            loaders=[node.loader]
             # not adding git metadata for sources because there are multiple sources per .yml file
         ).dict()
         for node_id, node in manifest.sources.items()

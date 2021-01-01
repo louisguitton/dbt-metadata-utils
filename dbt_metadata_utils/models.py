@@ -144,6 +144,30 @@ class GraphManifest(Manifest):
             )
         return sources
 
+    def get_ancestors_loaders(self, node_id: str, G: nx.DiGraph) -> Optional[List[str]]:
+        """Get all ancestors loaders of a dbt node.
+
+        Arguments:
+            node_id: node id as defined in the dbt artifacts
+            G: directed networkx graph of the dbt project
+
+        Returns:
+            loaders that impact the node, if any.
+        """
+        loaders = None
+        if node_id in G:
+            ancestors: Set[str] = nx.ancestors(G, node_id)
+            loaders = list(
+                set(
+                    [
+                        self.sources[s].loader
+                        for s in ancestors
+                        if s.startswith("source")
+                    ]
+                )
+            )
+        return loaders 
+
     @staticmethod
     def get_folder_from_node_id(node_id: str) -> str:
         """Extract the folder from the node id.
