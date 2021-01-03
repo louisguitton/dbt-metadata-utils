@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Set
 from pathlib import Path
 from enum import Enum
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, Field
 import networkx as nx
 
 
@@ -53,7 +53,7 @@ class BaseNode(BaseModel):
     path: Path
     resource_type: DbtResourceType
     # root_path: Path
-    # schema: str
+    schema_: str = Field(..., alias='schema')
     tags: List[str]
     unique_id: str
 
@@ -70,7 +70,7 @@ class Node(BaseNode):
 class Source(BaseNode):
     # external: Optional[bool]
     # freshness: Dict
-    # identifier: str
+    identifier: str
     # loaded_at_field: str
     loader: str
     # quoting: Dict
