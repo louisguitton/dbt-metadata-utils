@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # Get git repo object for git metadata
     repo: Repo = Repo(settings.dbt_repo_local_path)
 
-    with settings.dbt_manifest_path.open() as fh:
+    with settings.dbt_manifest_path.expanduser().open() as fh:
         data = json.load(fh)
 
     m = GraphManifest(**data)

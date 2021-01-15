@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: '../.env' })
 
 const searchClient = algoliasearch(
     process.env.ALGOLIA_APP_ID,
@@ -33,11 +33,11 @@ search.addWidgets([
                     <dt>folder:</dt>
                     <dd>${hit._highlightResult.folder.value}</dd>
                     <dt>sources:</dt>
-                    <dd><ul>${hit._highlightResult.sources
+                    <dd><ul>${(hit._highlightResult.sources || [])
                         .map(({ value }) => `<li>${value}</li>`)
                         .join('')}</ul></dd>
                     <dt>type:</dt>
-                    <dd>${hit.resource_type}</dd>
+                    <dd>${hit.resource_type}<dd>
                     <dt>materialization:</dt>
                     <dd>${hit.materialized}</dd>
                     <dt>loaders:</dt>
@@ -87,7 +87,7 @@ search.addWidgets([
         attribute: 'loaders',
     }),
     instantsearch.widgets.configure({
-        hitsPerPage: 10,
+        hitsPerPage: 5,
     })
 ]);
 

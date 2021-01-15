@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     index = client.init_index(settings.algolia_index_name)
 
-    with settings.dbt_manifest_path.open() as fh:
+    with settings.dbt_manifest_path.expanduser().open() as fh:
         data = json.load(fh)
 
     m = GraphManifest(**data)
