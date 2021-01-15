@@ -1,18 +1,23 @@
-from datetime import datetime
+"""Parse git metadata from the dbt repository we want to index."""
 import json
-from typing import List, Tuple, Optional
 import os
 
-from pydantic import BaseModel
-from git import Commit, Repo, GitCommandError
+from datetime import datetime
+from typing import List, Optional, Tuple
+
 import pandas as pd
+
+from git import Commit, GitCommandError, Repo
+from pydantic import BaseModel
 from tqdm import tqdm
 
-from dbt_metadata_utils.models import Node, GraphManifest
 from dbt_metadata_utils.config import Settings
+from dbt_metadata_utils.models import GraphManifest, Node
 
 
 class GitCommit(BaseModel):
+    """Model for git commit metadata."""
+
     authored_datetime: datetime
     commit: str
     author: str
@@ -20,6 +25,8 @@ class GitCommit(BaseModel):
 
 
 class FileGitHistory(BaseModel):
+    """Model for file git history metadata."""
+
     owner: str
     created_at: datetime
     last_modified_at: datetime
@@ -27,6 +34,8 @@ class FileGitHistory(BaseModel):
 
 
 def get_git_metadata(repo: Repo, node: Node) -> Optional[FileGitHistory]:
+    """Return git metadata for a file in the git repo."""
+    metadata = None
     try:
         # https://gitpython.readthedocs.io/en/stable/reference.html#git.repo.base.Repo.blame
         blame_raw: List[Tuple[Commit, List[str]]] = repo.blame(
@@ -59,7 +68,7 @@ def get_git_metadata(repo: Repo, node: Node) -> Optional[FileGitHistory]:
             last_modified_at=blame_clean.iloc[-1]["authored_datetime"],
             commits=blame_clean.to_dict(orient="records"),
         )
-    except GitCommandError as e:
+    except GitCommandError:
         # e.g.: 'fatal: no such path in HEAD' for local non-commited changes
         metadata = None
 

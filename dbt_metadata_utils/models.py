@@ -1,13 +1,18 @@
+"""Data models for parsing dbt artifacts into graphs."""
 import json
-from typing import Dict, List, Optional, Set
-from pathlib import Path
-from enum import Enum
 
-from pydantic import BaseModel, validator, Field
+from enum import Enum
+from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple
+
 import networkx as nx
+
+from pydantic import BaseModel, Field, validator
 
 
 class DbtResourceType(str, Enum):
+    """Different types of dbt resources."""
+
     model = "model"
     analysis = "analysis"
     test = "test"
@@ -17,6 +22,8 @@ class DbtResourceType(str, Enum):
 
 
 class DbtMaterializationType(str, Enum):
+    """Different types of dbt materialization."""
+
     table = "table"
     view = "view"
     incremental = "incremental"
@@ -25,21 +32,30 @@ class DbtMaterializationType(str, Enum):
 
 
 class NodeDeps(BaseModel):
+    """Dbt node dependencies of another node in manifest.json."""
+
     nodes: List[str]
     # macros
 
 
 class NodeConfig(BaseModel):
+    """Config key of a dbt node in manifest.json."""
+
     enabled: bool
     materialized: Optional[DbtMaterializationType]
     bind: Optional[bool]
 
+
 class Column(BaseModel):
+    """Model for column of a node in manifest.json."""
+
     name: str
     description: str
 
 
 class BaseNode(BaseModel):
+    """Model for node and source in manifest.json."""
+
     columns: Dict[str, Column]
     config: NodeConfig
     # database: str
@@ -53,11 +69,14 @@ class BaseNode(BaseModel):
     path: Path
     resource_type: DbtResourceType
     # root_path: Path
-    schema_: str = Field(..., alias='schema')
+    schema_: str = Field(..., alias="schema")
     tags: List[str]
     unique_id: str
 
+
 class Node(BaseNode):
+    """Node specific model in manifest.json."""
+
     # alias: str  # duplicate from name
     # checksum.checksum: str  # git commit sha256
     # deferred: bool
@@ -67,7 +86,10 @@ class Node(BaseNode):
     # refs: List[List[str]]  # duplicates of subset of depends_on
     sources: List[List[str]]  # duplicates of subset of depends_on
 
+
 class Source(BaseNode):
+    """Source specific model in manifest.json."""
+
     # external: Optional[bool]
     # freshness: Dict
     identifier: str
@@ -78,20 +100,21 @@ class Source(BaseNode):
     # source_meta: Dict
     # source_name: str
 
+
 class Manifest(BaseModel):
+    """Model for manifest.json."""
+
     nodes: Dict[str, Node]
     sources: Dict[str, Source]
     # macros
     # docs
     # exposures
-    # TODO: add exposures when needed
 
     @validator("*")
-    def filter(cls, val):
+    def filter(cls, val):  # noqa:ANN201,ANN001
+        """Filter nodes and sources by resource_type."""
         return {
-            k: v
-            for k, v in val.items()
-            if v.resource_type.value in ("model", "seed", "source")
+            k: v for k, v in val.items() if v.resource_type.value in ("model", "seed", "source")
         }
 
 
@@ -99,11 +122,13 @@ class GraphManifest(Manifest):
     """A parser for manifest.json, augmented with Graph logic."""
 
     @property
-    def node_list(self):
+    def node_list(self) -> List[str]:
+        """List of nodes required by networkx."""
         return list(self.nodes.keys()) + list(self.sources.keys())
 
     @property
-    def edge_list(self):
+    def edge_list(self) -> List[Tuple[str, str]]:
+        """List of edges required by networkx."""
         return [(d, k) for k, v in self.nodes.items() for d in v.depends_on.nodes]
 
     def build_graph(self) -> nx.Graph:
@@ -158,15 +183,9 @@ class GraphManifest(Manifest):
         if node_id in G:
             ancestors: Set[str] = nx.ancestors(G, node_id)
             loaders = list(
-                set(
-                    [
-                        self.sources[s].loader
-                        for s in ancestors
-                        if s.startswith("source")
-                    ]
-                )
+                set([self.sources[s].loader for s in ancestors if s.startswith("source")])
             )
-        return loaders 
+        return loaders
 
     @staticmethod
     def get_folder_from_node_id(node_id: str) -> str:

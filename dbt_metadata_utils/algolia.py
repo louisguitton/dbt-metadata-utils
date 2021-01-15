@@ -1,23 +1,22 @@
+"""Format metadata as Search records and update Algolia index."""
 import json
-from typing import Dict, List, Optional, Set
+
 from datetime import datetime
+from glob import glob
+from typing import Any, Dict, List, Optional
+
+import networkx as nx
 
 from algoliasearch.search_client import SearchClient
-from pydantic import BaseModel, validator, root_validator
-import networkx as nx
-from git import Repo
-from glob import glob
+from pydantic import BaseModel, root_validator, validator
 
-from dbt_metadata_utils.models import (
-    GraphManifest,
-    DbtMaterializationType,
-    DbtResourceType,
-)
-from dbt_metadata_utils.git_metadata import FileGitHistory
 from dbt_metadata_utils.config import Settings
+from dbt_metadata_utils.models import DbtMaterializationType, DbtResourceType, GraphManifest
 
 
 class NodeSearch(BaseModel):
+    """Model for searchable document in Algolia."""
+
     # unique id
     objectID: str
     # attributes for search
@@ -27,10 +26,6 @@ class NodeSearch(BaseModel):
     owner: Optional[str]
     created_at: Optional[datetime]
     last_modified_at: Optional[datetime]
-    # TODO: add URL
-    # https://dbt-models.onefootball.com/#!/model/model.of_models.dim_countries
-    # https://dbt-models.onefootball.com/#!/source/source.of_models.raw_airship.api_responses_list
-    # https://dbt-models.onefootball.com/#!/seed/seed.of_models.seed_adjust_ad_id_missing_data
     # attributes for filtering
     resource_type: DbtResourceType
     materialized: Optional[DbtMaterializationType]
@@ -41,11 +36,11 @@ class NodeSearch(BaseModel):
     degree_centrality: float
     is_in_mart: bool
     has_description: bool
-    # TODO: add other score as customRank
-    # score could be based on lastmod, number of users/views
+    # TODO: add other score as customRank e.g. lastmod, or number of users/views
 
     @root_validator(pre=True)
-    def parse(cls, values):
+    def parse(cls, values):  # noqa:ANN201,ANN001
+        """dbt artifacts parsing logic to transform a node into a record."""
         values["objectID"] = values.get("unique_id")
         values["materialized"] = values.get("config").get("materialized")
         values["folder"] = "/".join(values.get("fqn")[1:3])
@@ -54,15 +49,16 @@ class NodeSearch(BaseModel):
         return values
 
     @validator("degree_centrality")
-    def round(cls, v):
+    def round(cls, v):  # noqa:ANN201,ANN001
+        """Round degree_centrality value."""
         return round(v, 4)
 
-    class Config:
+    class Config:  # noqa:D106
         use_enum_values = True
 
 
 def get_es_records(
-    manifest: GraphManifest, git_metadata: Dict[str, FileGitHistory]
+    manifest: GraphManifest, git_metadata: Dict[str, Dict[str, Any]]
 ) -> List[Dict[str, str]]:
     """Generate ElasticSearch records from the manifest.json data."""
     # Build directed graph from manifest.json data
@@ -80,9 +76,7 @@ def get_es_records(
             degree_centrality=centrality.get(node_id, 0.0),
             sources=GraphManifest.get_ancestors_sources(node_id, G),
             loaders=manifest.get_ancestors_loaders(node_id, G),
-            **git_metadata.get(
-                node_id, dict(owner=None, created_at=None, last_modified_at=None)
-            ),
+            **git_metadata.get(node_id, dict(owner=None, created_at=None, last_modified_at=None)),
         ).dict()
         for node_id, node in manifest.nodes.items()
     ]
@@ -116,9 +110,7 @@ if __name__ == "__main__":
     # load git metadata
     git_metadata = {}
     for f_name in glob(f"{settings.git_metadata_cache_path}/*.json"):
-        node_id = f_name.split(f"{settings.git_metadata_cache_path}/")[-1].split(
-            ".json"
-        )[0]
+        node_id = f_name.split(f"{settings.git_metadata_cache_path}/")[-1].split(".json")[0]
 
         with open(f_name, "r") as fh:
             data = json.load(fh)
@@ -136,14 +128,14 @@ if __name__ == "__main__":
                 # Here we want name and description to have the same importance
                 # so we group them with a comma-separated list.
                 "name,description",
-                "folder,sources"
+                "folder,sources",
             ],
             "attributesForFaceting": [
                 "resource_type",
                 "materialized",
                 "searchable(folder)",
                 "searchable(sources)",
-                "loaders"
+                "loaders",
             ],
             "ranking": [
                 # we use centrality as a sorting attribute instead of a custom rank
@@ -162,21 +154,21 @@ if __name__ == "__main__":
 
     # Dynamic Filtering
     # = Removing filter values from the query string and using them directly as filters
-    index.save_rules([{
-        # https://www.algolia.com/doc/api-reference/api-methods/save-rule/#method-param-rule
-        "objectID": "loaders-facets",
-        "description": "Dynamic filtering on loaders",
-        "conditions": [{
-            "anchoring": "contains",
-            "pattern": "{facet:loaders}",
-            "alternatives": True
-        }],
-        "consequence": {
-            "params": {
-                "query": {
-                    "remove": ["{facet:loaders}"],
+    index.save_rules(
+        [
+            {
+                # https://www.algolia.com/doc/api-reference/api-methods/save-rule/#method-param-rule
+                "objectID": "loaders-facets",
+                "description": "Dynamic filtering on loaders",
+                "conditions": [
+                    {"anchoring": "contains", "pattern": "{facet:loaders}", "alternatives": True}
+                ],
+                "consequence": {
+                    "params": {
+                        "query": {"remove": ["{facet:loaders}"]},
+                        "automaticFacetFilters": ["loaders"],
+                    }
                 },
-                "automaticFacetFilters": ["loaders"],
             }
-        }
-    }])
+        ]
+    )

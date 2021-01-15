@@ -1,24 +1,9 @@
 {
-  "name": "dbt-search-app",
-  "version": "1.0.0",
-  "description": "Search your dbt models with Algolia",
-  "private": true,
-  "scripts": {
-    "start": "parcel index.html --port 3000",
-    "build": "parcel build index.html",
-    "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/louisguitton/dbt_metadata_utils.git"
-  },
-  "keywords": [
-    "algolia",
-    "instantsearch",
-    "dbt"
-  ],
   "author": "Louis Guitton",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  },
+  "description": "Search your dbt models with Algolia",
   "devDependencies": {
     "babel-eslint": "10.0.3",
     "eslint": "5.7.0",
@@ -29,7 +14,22 @@
     "parcel-bundler": "1.12.4",
     "prettier": "1.19.1"
   },
-  "dependencies": {
-    "dotenv": "^8.2.0"
-  }
+  "keywords": [
+    "algolia",
+    "instantsearch",
+    "dbt"
+  ],
+  "name": "dbt-search-app",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/louisguitton/dbt_metadata_utils.git"
+  },
+  "scripts": {
+    "build": "parcel build index.html",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "start": "parcel index.html --port 3000"
+  },
+  "version": "1.0.0"
 }

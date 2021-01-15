@@ -1,15 +1,17 @@
 """Architecture diagram.
+
 Ref:
     * https://diagrams.mingrammer.com/docs/getting-started/installation
     * http://www.graphviz.org/doc/info/attrs.html
 """
 from diagrams import Cluster, Diagram
-from diagrams.onprem.client import Users
-from diagrams.programming.language import NodeJS, Python
-from diagrams.custom import Custom
-from diagrams.onprem.vcs import Git
 from diagrams.aws.analytics import Redshift
+from diagrams.custom import Custom
 from diagrams.onprem.analytics import Metabase
+from diagrams.onprem.client import Users
+from diagrams.onprem.vcs import Git
+from diagrams.programming.language import NodeJS, Python
+
 
 light_blue = "#d2e5f4"
 hype_green = "#e1ff57"

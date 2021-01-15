@@ -7,7 +7,9 @@
 
 ## Installation
 
-TBD
+```sh
+make install
+```
 
 ## Usage
 
@@ -18,4 +20,6 @@ make run
 
 ## Development
 
-TBD
+```sh
+make develop
+```
