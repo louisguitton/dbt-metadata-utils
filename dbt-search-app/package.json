@@ -1,7 +1,8 @@
 {
   "author": "Louis Guitton",
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "push-dir": "^0.4.1"
   },
   "description": "Search your dbt models with Algolia",
   "devDependencies": {
@@ -29,6 +30,7 @@
     "build": "parcel build index.html",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
+    "push-gh-pages": "PRE_COMMIT_ALLOW_NO_CONFIG=1 push-dir --dir=dist --branch=gh-pages --cleanup --verbose",
     "start": "parcel index.html --port 3000"
   },
   "version": "1.0.0"
