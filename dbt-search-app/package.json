@@ -1,8 +1,8 @@
 {
   "author": "Louis Guitton",
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "push-dir": "^0.4.1"
+    "algoliasearch": "^4.9.1",
+    "instantsearch.js": "^4.22.0"
   },
   "description": "Search your dbt models with Algolia",
   "devDependencies": {
@@ -13,7 +13,8 @@
     "eslint-plugin-import": "2.19.1",
     "eslint-plugin-prettier": "3.1.2",
     "parcel-bundler": "1.12.4",
-    "prettier": "1.19.1"
+    "prettier": "1.19.1",
+    "push-dir": "^0.4.1"
   },
   "keywords": [
     "algolia",
@@ -30,7 +31,7 @@
     "build": "parcel build index.html",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
-    "push-gh-pages": "PRE_COMMIT_ALLOW_NO_CONFIG=1 push-dir --dir=dist --branch=gh-pages --cleanup --verbose",
+    "push-gh-pages": "PRE_COMMIT_ALLOW_NO_CONFIG=1 push-dir --dir=dist --branch=gh-pages --cleanup --verbose --allow-unclean",
     "start": "parcel index.html --port 3000"
   },
   "version": "1.0.0"

@@ -1,0 +1,30 @@
+# Ref: https://github.com/marketplace/actions/deploy-to-github-pages
+name: github-pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install and Build 🔧
+        env:
+          ALGOLIA_APP_ID: WMYBZVAPLT
+          ALGOLIA_SEARCH_ONLY_API_KEY: ${{ secrets.ALGOLIA_SEARCH_ONLY_API_KEY }}
+          ALGOLIA_INDEX_NAME: jaffle_shop_nodes
+        run: |
+          cd dbt-search-app
+          npm install
+          npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: dbt-search-app/dist
+          clean: true
+          clean-exclude: |
+            CNAME
