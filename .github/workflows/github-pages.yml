@@ -1,0 +1,19 @@
+name: github-pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install and Build 🔧
+        run: |
+          cd dbt-search-app
+          npm install
+          npm run build
+      - name: Deploy 🚀
+        run: |
+          npm run push-gh-pages

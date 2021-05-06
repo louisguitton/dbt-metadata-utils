@@ -19,7 +19,6 @@ develop: install
 lint:
 	pre-commit run -a
 
-
 deploy:
 	cd dbt-search-app && npm run build
 	npm run push-gh-pages
