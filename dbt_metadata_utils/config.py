@@ -1,5 +1,6 @@
 """Project settings."""
 from pathlib import Path
+from typing import Optional
 
 from pydantic import BaseSettings
 
@@ -14,7 +15,7 @@ class Settings(BaseSettings):
 
     dbt_manifest_path: Path = Path("data/manifest.json")
 
-    algolia_search_only_api_key: str
+    algolia_search_only_api_key: Optional[str]
 
     dbt_repo_local_path: Path
     git_metadata_cache_path: Path = Path("data/git_metadata")
