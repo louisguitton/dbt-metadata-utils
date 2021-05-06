@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  indexer:
+    container_name: dbt-metadata-indexer
+    build:
+      context: .
+      dockerfile: dbt_metadata_utils/Dockerfile
+    volumes:
+      - ${DBT_REPO_LOCAL_PATH}:/data/dbt_project
+      - ${DBT_MANIFEST_PATH}:/data/dbt_manifest.json
+    environment:
+      ALGOLIA_ADMIN_API_KEY: ${ALGOLIA_ADMIN_API_KEY}
+      ALGOLIA_APP_ID: ${ALGOLIA_APP_ID}
+      ALGOLIA_INDEX_NAME: ${ALGOLIA_INDEX_NAME}
+      DBT_REPO_LOCAL_PATH: /data/dbt_project
+      DBT_MANIFEST_PATH: /data/dbt_manifest.json
+      GIT_METADATA_CACHE_PATH: /data/git_metadata
+    command: python -m dbt_metadata_utils.git_metadata && python -m dbt_metadata_utils.algolia
+
+  frontend:
+    container_name: dbt-metadata-frontend
+    build:
+      context: .
+      dockerfile: dbt-search-app/Dockerfile
+    environment:
+      ALGOLIA_APP_ID: ${ALGOLIA_APP_ID}
+      ALGOLIA_INDEX_NAME: ${ALGOLIA_INDEX_NAME}
+      ALGOLIA_SEARCH_ONLY_API_KEY: ${ALGOLIA_SEARCH_ONLY_API_KEY}
+    ports:
+        - 8080:80
